@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers("/badema/api/obra/fechaTermino/**").hasAnyRole("Gerencia", "Usuario", "ADMIN")
                         .requestMatchers("/badema/api/obra/empresa/**").hasAnyRole("Gerencia", "Usuario", "ADMIN")
                         .requestMatchers("/badema/api/obra/id/**").permitAll()
-                        .requestMatchers("/badema/api/obra/guardar").hasAnyRole("Gerencia","ADMIN")
+                        .requestMatchers("/badema/api/obra/guardar").permitAll()
                         .requestMatchers("/badema/api/obra/actualizar/**").hasAnyRole("Gerencia","ADMIN")
                         .requestMatchers("/badema/api/obra/subir/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
                         .requestMatchers("/badema/api/obra/archivos/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
