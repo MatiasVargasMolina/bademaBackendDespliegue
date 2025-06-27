@@ -1,0 +1,22 @@
+# Etapa de construcción
+FROM eclipse-temurin:21-jdk AS builder
+WORKDIR /app
+
+# Copia el wrapper de Maven\COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
+
+# Copia el código fuente y empaqueta
+COPY src ./src
+RUN ./mvnw package -DskipTests -B
+
+# Etapa de runtime ligero
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+
+# Copia el JAR generado
+COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8090
+ENTRYPOINT ["java", "-jar", "app.jar"]
