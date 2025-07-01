@@ -11,8 +11,8 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
-                        "http://localhost:5173",  // Puerto de Vite en desarrollo
-                        "http://localhost:8090"
+                        "http://146.190.115.47:5173",  // Puerto de Vite en desarrollo
+                        "http://146.190.115.47:8090"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
