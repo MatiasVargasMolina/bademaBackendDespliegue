@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/badema/api/obra/actualizar/**").hasAnyRole("Gerencia","ADMIN")
                         .requestMatchers("/badema/api/obra/subir/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
                         .requestMatchers("/badema/api/obra/archivos/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
+                        .requestMatchers("/badema/api/obra/archivos/pdf/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
 
                         // Hitos
                         .requestMatchers("/badema/api/hito/agregar/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
@@ -74,6 +75,8 @@ public class SecurityConfig {
                         .requestMatchers("/badema/api/pedido/subir/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra",
                                 "Oficina tecnica")
                         .requestMatchers("/badema/api/pedido/archivos/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra",
+                                "Oficina tecnica")
+                        .requestMatchers("/badema/api/pedido/archivos/pdf/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra",
                                 "Oficina tecnica")
 
                         // Proveedor
@@ -122,6 +125,12 @@ public class SecurityConfig {
 
                         // Orden de compra
                         .requestMatchers("/badema/api/ordencompra/**").permitAll()
+                        .requestMatchers("/badema/api/ordencompra/subir/**").permitAll()
+                        .requestMatchers("/badema/api/ordencompra/archivos/**").permitAll()
+                        .requestMatchers("/badema/api/ordencompra/archivos/pdf/**").permitAll()
+
+                        // Archivos
+                        .requestMatchers("/badema/api/archivos/pdf/**").hasAnyRole("ADMIN","Gerencia","Administrador de obra")
 
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()

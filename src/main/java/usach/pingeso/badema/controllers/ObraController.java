@@ -1,6 +1,9 @@
 package usach.pingeso.badema.controllers;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -123,7 +126,23 @@ public class ObraController {
     @GetMapping("/archivos/{id}")
     public ResponseEntity<List<ObraDocument>> obtenerArchivos(@PathVariable Long id) {
         List<ObraDocument> archivos = obraArchivosService.getArchivosByIdObra(id);
-        if (archivos == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(archivos);
     }
+
+    @GetMapping("/archivos/pdf/{id}")
+    public ResponseEntity<Resource> descargarPdf(@PathVariable String id) {
+        try {
+            ObraDocument archivo = obraArchivosService.obtenerArchivoPorId(id);
+            Resource resource = obraArchivosService.obtenerArchivoComoResource(id);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + archivo.getNombreArchivo() + "\"")
+                    .contentLength(resource.contentLength())
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(resource);
+        } catch (RuntimeException | IOException ex) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 }

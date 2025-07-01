@@ -2,19 +2,25 @@ package usach.pingeso.badema.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import usach.pingeso.badema.documents.ValorEspecificacion;
 import usach.pingeso.badema.dtos.adquisiciones.ProveedorMaterialDTO;
+import usach.pingeso.badema.entities.ProveedorMaterialEntity;
+import usach.pingeso.badema.services.mongodb.NuevasEspecificacionesService;
 import usach.pingeso.badema.services.postgresql.ProveedorMaterialService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin
 @RequestMapping("/badema/api/proveedormaterial")
 public class ProveedorMaterialController {
     final ProveedorMaterialService proveedorMaterialService;
+    private final NuevasEspecificacionesService nuevasEspecificacionesService;
 
-    public ProveedorMaterialController(ProveedorMaterialService proveedorMaterialService) {
+    public ProveedorMaterialController(ProveedorMaterialService proveedorMaterialService, NuevasEspecificacionesService nuevasEspecificacionesService) {
         this.proveedorMaterialService = proveedorMaterialService;
+        this.nuevasEspecificacionesService = nuevasEspecificacionesService;
     }
 
     @GetMapping("/unionesPM")
@@ -30,11 +36,17 @@ public class ProveedorMaterialController {
     }
 
     @PostMapping("/guardar/{idProveedor}/{idMaterial}")
-    public ResponseEntity<ProveedorMaterialDTO> saveProveedorMaterial(@RequestBody ProveedorMaterialDTO proveedorMaterial,
+    public ResponseEntity<Void> saveProveedorMaterial(@RequestBody ProveedorMaterialDTO proveedorMaterial,
+                                                                      @RequestBody Map<String, ValorEspecificacion> nuevasEspecificacionesDocument,
                                                                       @PathVariable Long idProveedor,
                                                                       @PathVariable Long idMaterial){
-        ProveedorMaterialDTO newProveedorMaterial = proveedorMaterialService.saveProveedorMaterial(idProveedor, idMaterial, proveedorMaterial);
-        return ResponseEntity.ok(newProveedorMaterial);
+        ProveedorMaterialEntity newProveedorMaterial = proveedorMaterialService.saveProveedorMaterial(idProveedor, idMaterial, proveedorMaterial);
+        if(nuevasEspecificacionesService.insertarNuevasEspecificaciones(nuevasEspecificacionesDocument, newProveedorMaterial)){
+            return ResponseEntity.ok().build();
+        }
+        else{
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/actualizar/{idProveedor}/{idMaterial}")

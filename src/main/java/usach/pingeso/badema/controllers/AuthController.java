@@ -151,4 +151,18 @@ public class AuthController {
     public ResponseEntity<String> testEndpoint() {
         return ResponseEntity.ok("Access granted");
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@RequestHeader("Authorization") String authHeader) {
+        String token = authHeader.replace("Bearer ", "").trim();
+        Long idUsuario = jwtUtil.getIdUsuario(token);
+
+        jdbcTemplate.update(
+                "DELETE FROM public.session WHERE user_id = ?",
+                idUsuario
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
 }

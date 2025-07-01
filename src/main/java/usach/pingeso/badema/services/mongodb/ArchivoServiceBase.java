@@ -1,5 +1,7 @@
 package usach.pingeso.badema.services.mongodb;
 
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.web.multipart.MultipartFile;
 import usach.pingeso.badema.documents.ArchivoBaseDocument;
@@ -42,5 +44,22 @@ public abstract class ArchivoServiceBase<T extends ArchivoBaseDocument> {
         return repository.save(archive);
     }
 
+    // Método para obtener el archivo físico como Resource
+    public Resource obtenerArchivoComoResource(String id) {
+        ArchivoBaseDocument archivo = obtenerArchivoPorId(id);
+
+        File file = new File(archivo.getRutaArchivo());
+        if (!file.exists()) {
+            throw new RuntimeException("Archivo físico no encontrado");
+        }
+
+        return new FileSystemResource(file);
+    }
+
+    // Método para obtener metadata (lo asumo, lo puedes implementar)
+    public T obtenerArchivoPorId(String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Archivo no encontrado"));
+    }
 }
 

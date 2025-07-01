@@ -22,8 +22,6 @@ public class NuevasEspecificacionesDocument {
     // Linkeado a un proveedorMaterial con las especificasciones directas
     private Long idProveedorMaterial;
 
-    private String idEspecificacionInicial;
-
     // Aqui van la copia de las especificaciones con su marca si son iguals o nuevas, etc.
     private Map<String, ValorEspecificacion> especificacionesNuevas = new HashMap<>();
 

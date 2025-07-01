@@ -10,7 +10,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-@Configuration(proxyBeanMethods = false)
+@Configuration
 public class JwtUtil {
 
     // Este es el código secreto que está en la fase de firma del JWT

@@ -2,6 +2,7 @@ package usach.pingeso.badema.services.postgresql;
 
 import org.springframework.stereotype.Service;
 import usach.pingeso.badema.documents.EspecificacionMaterialDocument;
+import usach.pingeso.badema.documents.NuevasEspecificacionesDocument;
 import usach.pingeso.badema.dtos.adquisiciones.*;
 import usach.pingeso.badema.dtos.ordencompra.ItemOrdenCompraDTO;
 import usach.pingeso.badema.entities.DetallePedidoEntity;
@@ -10,6 +11,7 @@ import usach.pingeso.badema.entities.PedidoEntity;
 import usach.pingeso.badema.entities.ProveedorMaterialEntity;
 import usach.pingeso.badema.services.PedidosAdqService;
 import usach.pingeso.badema.services.mongodb.EspecificacionesMaterialService;
+import usach.pingeso.badema.services.mongodb.NuevasEspecificacionesService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -21,15 +23,17 @@ public class ManejarAdquisicionesService {
     private final PedidosAdqService pedidosAdqService;
     private final EspecificacionesMaterialService especificacionesMaterialService;
     private final ProveedorMaterialService proveedorMaterialService;
+    private final NuevasEspecificacionesService nuevasEspecificacionesService;
 
     public ManejarAdquisicionesService(PedidoService pedidoService,
                                        PedidosAdqService pedidosAdqService,
                                        EspecificacionesMaterialService especificacionesMaterialService,
-                                       ProveedorMaterialService proveedorMaterialService){
+                                       ProveedorMaterialService proveedorMaterialService, NuevasEspecificacionesService nuevasEspecificacionesService){
         this.pedidoService = pedidoService;
         this.pedidosAdqService = pedidosAdqService;
         this.especificacionesMaterialService = especificacionesMaterialService;
         this.proveedorMaterialService = proveedorMaterialService;
+        this.nuevasEspecificacionesService = nuevasEspecificacionesService;
     }
 
     public MaterialConProveedoresDTO obtenerMaterialDePedido(Long idPedido, Long idMaterial) {
@@ -114,6 +118,8 @@ public class ManejarAdquisicionesService {
     public ProveedorMaterialDetalleDTO getDetalleProveedorMaterial(Long idProveedor, Long idMaterial) {
         ProveedorMaterialEntity entidad = proveedorMaterialService.getByProveedorAndMaterial(idProveedor, idMaterial);
 
+        NuevasEspecificacionesDocument esp = nuevasEspecificacionesService.getNuevasEspecificacionesByProveedorMaterialId(entidad.getId());
+
         ProveedorMaterialDetalleDTO dto = new ProveedorMaterialDetalleDTO();
         dto.setIdMaterial(entidad.getMaterial().getId());
         dto.setNombreMaterial(entidad.getMaterial().getNombre());
@@ -123,11 +129,7 @@ public class ManejarAdquisicionesService {
         dto.setPrecio(entidad.getPrecio());
         dto.setRestricciones(entidad.getProveedor().getRestricciones());
         dto.setComentarios(entidad.getComentarios());
-
-        //Se obtienen las nuevas especificaciones tecnicas del material-proveedor
-        /*EspecificacionMaterialDocument detalleMongo =
-                especificacionesMaterialService.getEspecificacionesByMaterialId(material.getId());
-        dto.setNuevasEspecificaciones(detalleMongo);*/
+        dto.setNuevasEspecificaciones(esp);
 
         return dto;
     }

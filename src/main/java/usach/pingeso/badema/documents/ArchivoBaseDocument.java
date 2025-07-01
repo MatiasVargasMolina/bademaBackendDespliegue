@@ -14,4 +14,3 @@ public abstract class ArchivoBaseDocument {
     private LocalDate fechaSubidaArchivo;
     private String nombreArchivo;
 }
-

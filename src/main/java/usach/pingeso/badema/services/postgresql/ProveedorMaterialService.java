@@ -99,7 +99,13 @@ public class ProveedorMaterialService {
                 .orElseThrow(() -> new RuntimeException("No se encontró la relación proveedor-material"));
     }
 
-    public ProveedorMaterialDTO saveProveedorMaterial(Long idProveedor, Long idMaterial,
+//    public ProveedorMaterialEntity getProveedorMaterialById(Long id){
+//        Optional<ProveedorMaterialEntity> opt = proveedorMaterialRepository.findById(id);
+//        if (opt.isPresent()) return opt.get();
+//        else throw new EntityNotFoundException("No se encuentra el proveedor material con id: " + id);
+//    }
+
+    public ProveedorMaterialEntity saveProveedorMaterial(Long idProveedor, Long idMaterial,
                                                       ProveedorMaterialDTO unionPM){
         // Verificar que exista el proveedor
         Optional<ProveedorEntity> proveedor = proveedorRepository.findById(idProveedor);
@@ -122,8 +128,7 @@ public class ProveedorMaterialService {
         unionPM.setComentarios(unionPM.getComentarios());
 
         ProveedorMaterialEntity entidad = mapDTOToEntity(unionPM);
-        ProveedorMaterialEntity entidadGuardada = proveedorMaterialRepository.save(entidad);
-        return mapEntityToSingleDTO(entidadGuardada);
+        return proveedorMaterialRepository.save(entidad);
     }
 
     public ProveedorMaterialDTO updateProveedorMaterial(Long idProveedor, Long idMaterial,
